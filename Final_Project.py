@@ -5,11 +5,13 @@ from geneal.genetic_algorithms import ContinuousGenAlgSolver, BinaryGenAlgSolver
 from geneal.applications.fitness_functions.continuous import fitness_functions_continuous
 
 def rescale_value(old_max, old_min, new_max, new_min, old_value):
-    old_range=(old_max - old_min)
-    new_range=(new_max - new_min)
-    new_value = (((old_value - old_min) * new_range) / old_range) + new_min
+    # old_range=(old_max - old_min)
+    # new_range=(new_max - new_min)
+    # new_value = (((old_value - old_min) * new_range) / old_range) + new_min
 
-    return new_value
+    # return new_value
+    return (old_max - old_min) * (old_value - new_min) / (new_max - new_min) + old_min
+    
 
 def merge(list1, list2):
      
