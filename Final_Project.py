@@ -66,10 +66,11 @@ def main():
         n_genes=3,
         fitness_function=my_fitness_function(),
         pop_size=100,
-        plot_results=False,
+        plot_results=True,
         variables_limits=min_maxs_old,
         random_state=42,
-        verbose=False,
+        verbose=True,
+        max_gen=100,
     )
     solver.solve()
         
@@ -91,34 +92,41 @@ def main():
     new_maxs.append(max(prev_stl_per_g))
     new_maxs.append(max(prev_blk_per_g))
     
-    scaled_member = [0,0,0]
+    #1
+    #Currently the scaled member is the most fit individual rescaled to match the statistics csv we are 
+    #using to create the individual.  The reason we have to rescale is because we cannot set bounds on
+    #the evolutionary algorithm.  Currently it is evolving an individual that matches all the highest stats
+    #we give it.  I.E. the upper bound in the variable_limits parameter in the solver.
     
-    scaled_member[0] = rescale_value(
+    #2
+    #Now we need to write an algorithm that matches this fit individual with a player in the csv.
+    rescaled_member = [0,0,0]    
+    rescaled_member[0] = rescale_value(
                             old_min=min_maxs_old[0][0],
                             old_max=min_maxs_old[0][1],  
                             new_min=new_mins[0], 
                             new_max=new_maxs[0], 
                             old_value=solver.best_individual_[0]
                             )
+    rescaled_member[1] = rescale_value(
+                            old_min=min_maxs_old[1][0],
+                            old_max=min_maxs_old[1][1],  
+                            new_min=new_mins[1], 
+                            new_max=new_maxs[1], 
+                            old_value=solver.best_individual_[1]
+                            )
+    rescaled_member[2] = rescale_value(
+                            old_min=min_maxs_old[2][0],
+                            old_max=min_maxs_old[2][1],  
+                            new_min=new_mins[2], 
+                            new_max=new_maxs[2], 
+                            old_value=solver.best_individual_[2]
+                            )
     
-    print('scaled_member[0]:', scaled_member[0])
-    print(min_maxs_old[0][0], min_maxs_old[0][1], new_mins[0], new_maxs[0], solver.best_individual_[0])
-    
+    print('rescaled member statistics: \n', rescaled_member)
+
+
+
 if __name__ == "__main__":
     main()
     
-    # y_interp = scipy.interpolate.interp1d()
-    
-    # solver.solve()
-    #print('this is best individual: ', solver.best_individual_)
-    # best_candidate = np.asarray(solver.best_individual_)
-    # best_candidate[0] = np.reshape(best_candidate[0], (-1,1))
-    # print('this is best candidate [0]', best_candidate[0])
-    
-    
-    # scaled_candidate = [0,0,0]
-    # scaled_candidate[0] = scaler.transform(best_candidate[0])
-    # print(scaled_candidate[0])
-    # scaled_candidate[0] = perform_min_max_normalization(minv = min_maxs[0][0], maxv=min_maxs[0][1], prec=.001, vals=best_candidate[0])
-    
-    # print(scaled_candidate[0])
