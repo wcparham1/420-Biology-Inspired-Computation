@@ -1,11 +1,11 @@
 import numpy as np
-import matplotlib as pyplot
+import matplotlib.pyplot as plt
 import pandas as pd
 from geneal.genetic_algorithms import ContinuousGenAlgSolver, BinaryGenAlgSolver
 from geneal.applications.fitness_functions.continuous import fitness_functions_continuous
 
 #When you want to look at a new position set this variable to a value between 0-4
-POSITION = 0
+POSITION = 4
 
 
 #This function rescales values between two previous min and maxes.
@@ -58,7 +58,6 @@ def main():
     for frame in players_by_position:
         names_by_position.append(frame[['player']].copy())
         
-    print('these are the positions:', pos_list)
     #look at each position and find the min/max of each statistic.
     mins = []
     maxs = []
@@ -157,8 +156,68 @@ def main():
     
     print('matched index: ', matched_index)
     player_selected = names_by_position[POSITION].iloc[[matched_index]]                            #CHANGE THIS LINE WHEN LOOKING AT DIFFERENT POSITION
+    
+    print('this the current position:', pos_list[POSITION])
     print(player_selected, matched_val)
 
+#CREATE A GRAPH DEPICTING AVERAGE SCORES IN EACH CATEGORY VS WHAT OUR PLAYER DOES IN EACH CATEGORY
+
+#matched player indexes
+# anthony davis 23
+# lebron james 50
+# devin booker 8
+# kyrie irving 42
+# jayson tatum 103 SF
+    best_stats = []
+    all_stats = []
+    
+    print(players_by_position[0].iloc[[23]][['fg_per_g', 'stl_per_g', 'blk_per_g']])
+    
+    best_stats.append(players_by_position[0].iloc[[23]][['player','fg_per_g', 'stl_per_g', 'blk_per_g']])
+    best_stats.append(players_by_position[1].iloc[[50]][['player','fg_per_g', 'stl_per_g', 'blk_per_g']])
+    best_stats.append(players_by_position[2].iloc[[8]][['player','fg_per_g', 'stl_per_g', 'blk_per_g']])
+    best_stats.append(players_by_position[3].iloc[[42]][['player','fg_per_g', 'stl_per_g', 'blk_per_g']])
+    best_stats.append(players_by_position[4].iloc[[103]][['player','fg_per_g', 'stl_per_g', 'blk_per_g']])
+    
+    players_by_position[0] = players_by_position[0][players_by_position[0].player != 'Anthony Davis']
+    players_by_position[1] = players_by_position[1][players_by_position[1].player != 'LeBron James']
+    players_by_position[2] = players_by_position[2][players_by_position[2].player != 'Devon Booker']
+    players_by_position[3] = players_by_position[3][players_by_position[3].player != 'Kyrie Irving']
+    players_by_position[4] = players_by_position[4][players_by_position[4].player != 'Jayson Tatum']
+    
+    
+    all_stats.append(players_by_position[0][['player','fg_per_g', 'stl_per_g', 'blk_per_g']])
+    all_stats.append(players_by_position[1][['player','fg_per_g', 'stl_per_g', 'blk_per_g']])
+    all_stats.append(players_by_position[2][['player','fg_per_g', 'stl_per_g', 'blk_per_g']])
+    all_stats.append(players_by_position[3][['player','fg_per_g', 'stl_per_g', 'blk_per_g']])
+    all_stats.append(players_by_position[4][['player','fg_per_g', 'stl_per_g', 'blk_per_g']])
+    
+    all_players = pd.concat(all_stats)
+    all_players = all_players[['fg_per_g', 'stl_per_g', 'blk_per_g']]
+    avg_means = all_players.mean(axis=0)
+    
+    test = pd.concat(best_stats)
+    test = test[['fg_per_g', 'stl_per_g', 'blk_per_g']]
+    best_means = test.mean(axis=0)
+    
+    #best means contains the means from our best players
+    #average means contains the means from all players besides the best
+    print(best_means)
+    print(avg_means)
+    
+    data = {'our_fg_per_g': best_means[0], 'our_stl_per_g': best_means[1], 'our_blk_per_g': best_means[2],
+            'avg_fg_per_g': avg_means[0], 'avg_stl_per_g': avg_means[1], 'avg_blk_per_g': avg_means[2]}
+    
+    labels = list(data.keys())
+    values = list(data.values())
+    fig = plt.figure(figsize= (10,5))
+
+    plt.bar(labels, values, color = 'orange', width = 0.4)
+    
+    plt.xlabel('average respective team')
+    plt.ylabel('average score for both teams')
+    plt.title("Ideal Constructed Team vs. Average Team")
+    plt.show()
 if __name__ == "__main__":
     main()
     
