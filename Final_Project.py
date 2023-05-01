@@ -4,20 +4,20 @@ import pandas as pd
 from geneal.genetic_algorithms import ContinuousGenAlgSolver, BinaryGenAlgSolver
 from geneal.applications.fitness_functions.continuous import fitness_functions_continuous
 
+#This function rescales values between two previous min and maxes.
+#Use it when converting a player's statistics from the evolutionary algorithm to the csv.
 def rescale_value(old_max, old_min, new_max, new_min, old_value):
-    # old_range=(old_max - old_min)
-    # new_range=(new_max - new_min)
-    # new_value = (((old_value - old_min) * new_range) / old_range) + new_min
-
-    # return new_value
     return (old_max - old_min) * (old_value - new_min) / (new_max - new_min) + old_min
     
 
+#This function merges two lists together.  Use it when creating the old_min_max list.
+#Perhaps get rid of this function later.
 def merge(list1, list2):
-     
     merged_list = tuple(zip(list1, list2))
     return merged_list
 
+#This is the fitness function we are using when evolving players with the evolutionary algorithm.
+#We can change this lambda function inside to weight different attributes accordingly.
 def my_fitness_function():    
     ret_val = lambda chromosome: (1.5*chromosome[0] + 1.0*chromosome[1] + 2.0*chromosome[2])
     return ret_val
